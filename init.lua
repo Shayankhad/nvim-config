@@ -62,6 +62,7 @@ vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 
 -- Better J (keep cursor in place)
+vim.keymap.set('n', 'J', 'mzJ`z')
 
 -- Indenting
 vim.keymap.set('v', '<', '<gv')
@@ -90,13 +91,13 @@ vim.keymap.set('n', '<C-Up>',      ':resize -2<CR>',          { desc = 'Decrease
 vim.keymap.set('n', '<C-Down>',    ':resize +2<CR>',          { desc = 'Increase height' })
 vim.keymap.set('n', '<C-Left>',    ':vertical resize -2<CR>', { desc = 'Decrease width' })
 vim.keymap.set('n', '<C-Right>',   ':vertical resize +2<CR>', { desc = 'Increase width' })
-vim.keymap.set('n', '<C-S-Up>',    ':resize -10<CR>',          { desc = 'Decrease height by 10' })
-vim.keymap.set('n', '<C-S-Down>',  ':resize +10<CR>',          { desc = 'Increase height by 10' })
+vim.keymap.set('n', '<C-S-Up>',    ':resize -10<CR>',         { desc = 'Decrease height by 10' })
+vim.keymap.set('n', '<C-S-Down>',  ':resize +10<CR>',         { desc = 'Increase height by 10' })
 vim.keymap.set('n', '<C-S-Left>',  ':vertical resize -10<CR>', { desc = 'Decrease width by 10' })
 vim.keymap.set('n', '<C-S-Right>', ':vertical resize +10<CR>', { desc = 'Increase width by 10' })
 
 -- ============================================
--- PLUGINS
+-- PLUGINS (lazy.nvim)
 -- ============================================
 require("lazy").setup({
 
@@ -119,9 +120,10 @@ require("lazy").setup({
     end,
   },
 
-  -- Mason (LSP installer)
+  -- LSP Core & Installer
   { "williamboman/mason.nvim", config = true },
   { "williamboman/mason-lspconfig.nvim" },
+  { "neovim/nvim-lspconfig" }, -- Required for bridging mason & native LSP config
 
   -- Autocompletion
   { "hrsh7th/nvim-cmp" },
@@ -131,30 +133,50 @@ require("lazy").setup({
   { "L3MON4D3/LuaSnip", version = "v2.*" },
   { "saadparwaiz1/cmp_luasnip" },
 
+-- Treesitter (Advanced Highlighting)
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    config = function()
+      -- The old require("nvim-treesitter.configs").setup() is gone.
+      -- We just call the main module setup function directly:
+      require("nvim-treesitter").setup({
+        ensure_installed = { "c", "cpp", "python", "lua", "vim", "vimdoc" },
+        highlight = { enabled = true },
+        indent = { enabled = true },
+      })
+    end,
+  },
+  -- Telescope (Fuzzy Finder)
+  {
+    "nvim-telescope/telescope.nvim",
+    branch = "0.1.x",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local builtin = require('telescope.builtin')
+      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find Files' })
+      vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live Grep' })
+      vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Find Buffers' })
+    end
+  },
+
+  -- Commenting tool (gcc to comment line, gc in visual mode)
+  { "numToStr/Comment.nvim", config = true },
+
+  -- Git integration gutter indicators
+  { "lewis6991/gitsigns.nvim", config = true },
+
   -- Jupyter notebooks
   { "goerz/jupytext.vim" },
 
 }, {
-  install = {
-    colorscheme = { "onedark" },
-  },
-  checker = {
-    enabled = false,
-    notify = false,
-  },
-  change_detection = {
-    notify = false,
-  },
+  install = { colorscheme = { "onedark" } },
+  checker = { enabled = false, notify = false },
+  change_detection = { notify = false },
   performance = {
     rtp = {
       disabled_plugins = {
-        "gzip",
-        "matchit",
-        "matchparen",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
+        "gzip", "matchit", "matchparen", "tarPlugin", "tohtml", "tutor", "zipPlugin",
       },
     },
   },
@@ -164,36 +186,44 @@ require("lazy").setup({
 -- LSP SETUP
 -- ============================================
 
+-- Setup mason utilities
 require("mason").setup()
+
+-- Link cmp capabilities to LSP configs so autocomplete actually gets suggestions
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
+local lspconfig = require("lspconfig")
+
 require("mason-lspconfig").setup({
-  ensure_installed = {
-    "clangd",   -- C and C++
-    "pyright",  -- Python + Jupyter
-  },
-})
-
--- C / C++
-vim.lsp.config('clangd', {
-  capabilities = vim.lsp.protocol.make_client_capabilities(),
-})
-
--- Python / Jupyter
-vim.lsp.config('pyright', {
-  capabilities = vim.lsp.protocol.make_client_capabilities(),
-  settings = {
-    python = {
-      analysis = {
-        typeCheckingMode = "basic",
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = true,
-      }
-    }
+  ensure_installed = { "clangd", "pyright" },
+  handlers = {
+    -- Default handler sets up servers automatically with cmp capabilities
+    function(server_name)
+      lspconfig[server_name].setup({
+        capabilities = capabilities,
+      })
+    end,
+    
+    -- Dedicated override for Pyright (adds your custom settings)
+    ["pyright"] = function()
+      lspconfig.pyright.setup({
+        capabilities = capabilities,
+        settings = {
+          python = {
+            analysis = {
+              typeCheckingMode = "basic",
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+            }
+          }
+        }
+      })
+    end,
   }
 })
 
-vim.lsp.enable({ 'clangd', 'pyright' })
-
--- LSP keymaps
+-- LSP global keymaps trigger only when server attaches to buffer
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(event)
     local opts = { buffer = event.buf }
@@ -208,10 +238,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set('n', '<leader>e',  vim.diagnostic.open_float, opts)
   end
 })
+
 -- ============================================
 -- AUTOCOMPLETE SETUP
 -- ============================================
-
 local cmp = require("cmp")
 local luasnip = require("luasnip")
 
