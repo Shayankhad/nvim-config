@@ -1,7 +1,7 @@
 -- ~/.config/nvim/init.lua
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -16,8 +16,6 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = ' '
 vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Save file' })
 vim.opt.number = true
-
-
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
 vim.keymap.set('i', 'kj', '<Esc>')
@@ -27,7 +25,6 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.wrap = false
 vim.opt.ignorecase = true 
 vim.opt.smartcase = true
-
 vim.opt.termguicolors = true   
 vim.opt.cursorline = true     
 vim.opt.signcolumn = "yes"
@@ -57,6 +54,11 @@ vim.keymap.set('n', 'J', 'mzJ`z')
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
 vim.keymap.set('n', 'Y', 'y$')
+vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'Paste without yanking' })
+vim.keymap.set('n', '<leader>d', '"_d', { desc = 'Delete without yanking' })
+vim.keymap.set('x', '<leader>d', '"_d', { desc = 'Delete without yanking' })
+vim.keymap.set('n', '<leader>D', '"_D', { desc = 'Delete to end without yanking' })
+vim.keymap.set('n', '<leader>x', '"_x', { desc = 'Delete char without yanking' })
 vim.keymap.set('n', '<C-Up>', ':resize -2<CR>', {desc = 'Decrease height'})
 vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', {desc = 'Increase height'})
 vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>', {desc = 'Decrease width'})
