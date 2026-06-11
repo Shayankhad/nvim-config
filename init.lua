@@ -96,6 +96,7 @@ vim.keymap.set('n', '<C-S-Down>',  ':resize +10<CR>',         { desc = 'Increase
 vim.keymap.set('n', '<C-S-Left>',  ':vertical resize -10<CR>', { desc = 'Decrease width by 10' })
 vim.keymap.set('n', '<C-S-Right>', ':vertical resize +10<CR>', { desc = 'Increase width by 10' })
 
+vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { desc = 'Exit terminal mode' })
 -- ============================================
 -- PLUGINS (lazy.nvim)
 -- ============================================
