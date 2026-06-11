@@ -62,7 +62,6 @@ vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 
 -- Better J (keep cursor in place)
-vim.keymap.set('n', 'J', 'mzJ`z')
 
 -- Indenting
 vim.keymap.set('v', '<', '<gv')
