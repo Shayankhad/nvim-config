@@ -18,7 +18,7 @@ vim.opt.rtp:prepend(lazypath)
 -- BASIC SETTINGS
 -- ============================================
 vim.g.mapleader = ' '
-
+vim.opt.fileformat = "unix"
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
@@ -256,6 +256,7 @@ cmp.setup({
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>']     = cmp.mapping.abort(),
     ['<CR>']      = cmp.mapping.confirm({ select = true }),
+    ['='] = nil,  -- Prevents = from triggering snippets
     ['<Tab>']     = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
