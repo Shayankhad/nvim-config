@@ -1,6 +1,3 @@
--- ~/.config/nvim/init.lua
-
--- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
@@ -12,11 +9,9 @@ if not vim.uv.fs_stat(lazypath) then
     lazypath,
   })
 end
-vim.opt.rtp:prepend(lazypath)
 
--- ============================================
--- BASIC SETTINGS
--- ============================================
+
+vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = ' '
 vim.opt.fileformat = "unix"
 vim.opt.number = true
@@ -36,73 +31,43 @@ vim.opt.scrolloff = 8
 vim.opt.updatetime = 50
 vim.opt.incsearch = true
 vim.opt.hlsearch = true
-
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 
--- ============================================
--- KEYMAPS
--- ============================================
 
--- Escape
 vim.keymap.set('i', 'kj', '<Esc>')
 vim.keymap.set('v', 'kj', '<Esc>')
 vim.keymap.set('c', 'kj', '<Esc>')
-
--- General
 vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Save file' })
 vim.keymap.set('n', '<Esc>', ':noh<CR>', { desc = 'Clear search highlight' })
 vim.keymap.set('n', 'Y', 'y$')
-
--- Search (keep cursor centered)
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
-
--- Better J (keep cursor in place)
 vim.keymap.set('n', 'J', 'mzJ`z')
-
--- Indenting
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
-
--- Move lines up/down
-vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
-vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
-
--- Black hole register
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv")
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'Paste without losing register' })
 vim.keymap.set('n', '<leader>d', '"_d', { desc = 'Delete without yanking' })
 vim.keymap.set('x', '<leader>d', '"_d', { desc = 'Delete without yanking' })
 vim.keymap.set('n', '<leader>D', '"_D', { desc = 'Delete to end without yanking' })
 vim.keymap.set('n', '<leader>x', '"_x', { desc = 'Delete char without yanking' })
-
--- Window navigation
 vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to left window' })
 vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to window below' })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to window above' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to right window' })
-vim.keymap.set('n', '<leader>w=', '<C-w>=', { desc = 'Equalize all windows' })
-
--- Window resizing
 vim.keymap.set('n', '<C-Up>',      ':resize -2<CR>',          { desc = 'Decrease height' })
 vim.keymap.set('n', '<C-Down>',    ':resize +2<CR>',          { desc = 'Increase height' })
 vim.keymap.set('n', '<C-Left>',    ':vertical resize -2<CR>', { desc = 'Decrease width' })
 vim.keymap.set('n', '<C-Right>',   ':vertical resize +2<CR>', { desc = 'Increase width' })
-vim.keymap.set('n', '<C-S-Up>',    ':resize -10<CR>',         { desc = 'Decrease height by 10' })
-vim.keymap.set('n', '<C-S-Down>',  ':resize +10<CR>',         { desc = 'Increase height by 10' })
-vim.keymap.set('n', '<C-S-Left>',  ':vertical resize -10<CR>', { desc = 'Decrease width by 10' })
-vim.keymap.set('n', '<C-S-Right>', ':vertical resize +10<CR>', { desc = 'Increase width by 10' })
-
 vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { desc = 'Exit terminal mode' })
--- ============================================
--- PLUGINS (lazy.nvim)
--- ============================================
+
+
 require("lazy").setup({
 
-  -- Colorscheme
   {
     "navarasu/onedark.nvim",
     name = "onedark",
