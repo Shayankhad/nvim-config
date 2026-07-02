@@ -107,6 +107,15 @@ require("lazy").setup({
 
   { "lewis6991/gitsigns.nvim", config = true },
   {
+    "akinsho/toggleterm.nvim",
+    version = "*",
+    opts = {
+      open_mapping = [[<C-t>]], -- Press Ctrl+t to toggle the terminal
+      direction = "float",      -- "float" is great, or use "horizontal"
+      float_opts = { border = "curved" },
+    },
+  },
+  {
     "sphamba/smear-cursor.nvim",
     opts = {
       -- Smear cursor when jumping between buffers or windows
