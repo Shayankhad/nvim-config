@@ -74,7 +74,7 @@ require("lazy").setup({
         style = "deep",
         toggle_style_key = "<leader>ts",
         toggle_style_list = { "dark", "darker", "cool", "deep", "warm", "warmer" },
-        transparent = false,
+        transparent = true,
         term_colors = true,
         ending_tildes = false,
         cmp_itemkind_reverse = false,
@@ -106,7 +106,17 @@ require("lazy").setup({
   },
 
   { "lewis6991/gitsigns.nvim", config = true },
-
+  {
+    "sphamba/smear-cursor.nvim",
+    opts = {
+      -- Smear cursor when jumping between buffers or windows
+      smear_between_buffers = true,
+      -- Smear cursor when moving down to neighbor lines
+      smear_between_neighbor_lines = true,
+      -- Animate cursor trail inside insert mode
+      smear_insert_mode = true,
+    },
+  },
   { "goerz/jupytext.vim" },
 
 }, {
