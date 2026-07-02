@@ -36,11 +36,11 @@ vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
-
+vim.keymap.set('n', '<leader>o', 'o<Esc>', { desc = 'New line below' })
+vim.keymap.set('n', '<leader>O', 'O<Esc>', { desc = 'New line above' })
 vim.keymap.set('i', 'kj', '<Esc>')
 vim.keymap.set('v', 'kj', '<Esc>')
 vim.keymap.set('c', 'kj', '<Esc>')
-vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Save file' })
 vim.keymap.set('n', '<Esc>', ':noh<CR>', { desc = 'Clear search highlight' })
 vim.keymap.set('n', 'Y', 'y$')
 vim.keymap.set('n', 'n', 'nzzzv')
