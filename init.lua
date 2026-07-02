@@ -40,7 +40,7 @@ vim.keymap.set('n', '<leader>o', 'o<Esc>', { desc = 'New line below' })
 vim.keymap.set('n', '<leader>O', 'O<Esc>', { desc = 'New line above' })
 vim.keymap.set('i', 'kj', '<Esc>')
 vim.keymap.set('v', 'kj', '<Esc>')
-vim.keymap.set('c', 'kj', '<Esc>')
+vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { desc = 'Exit terminal mode' })
 vim.keymap.set('n', '<Esc>', ':noh<CR>', { desc = 'Clear search highlight' })
 vim.keymap.set('n', 'Y', 'y$')
 vim.keymap.set('n', 'n', 'nzzzv')
@@ -62,7 +62,6 @@ vim.keymap.set('n', '<C-Up>', ':resize -2<CR>', { desc = 'Decrease height' })
 vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', { desc = 'Increase height' })
 vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>', { desc = 'Decrease width' })
 vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', { desc = 'Increase width' })
-vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { desc = 'Exit terminal mode' })
 
 require("lazy").setup({
 
@@ -83,7 +82,28 @@ require("lazy").setup({
       require("onedark").load()
     end,
   },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    lazy = false,
+    build = ":TSUpdate",
+    config = function()
+      -- Safely require the module
+      local status_ok, configs = pcall(require, "nvim-treesitter.configs")
+      if not status_ok then
+        return -- Exit silently if not installed yet
+      end
 
+      configs.setup({
+        ensure_installed = { 
+          "c", "cpp", "python", "lua", "vim", "vimdoc", "query",
+          "markdown", "markdown_inline", "sql", "asm", "bash"
+        },
+        highlight = {
+          enable = true,
+        },
+      })
+    end,
+  },
   {
     "numToStr/Comment.nvim",
     lazy = false,
