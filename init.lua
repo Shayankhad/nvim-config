@@ -12,7 +12,8 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = ' '
-vim.opt.fileformat = "unix"
+vim.opt.fileformats = "unix,dos"
+vim.keymap.set('n', '<leader>cm', ':%s/<C-v><CR>//g<CR>', { desc = 'Remove ^M characters' })
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
