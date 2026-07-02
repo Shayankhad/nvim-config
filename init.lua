@@ -104,13 +104,6 @@ require("lazy").setup({
       })
     end,
   },
-  {
-    "numToStr/Comment.nvim",
-    lazy = false,
-    config = function()
-      require("Comment").setup()
-    end,
-  },
 
   { "lewis6991/gitsigns.nvim", config = true },
 
