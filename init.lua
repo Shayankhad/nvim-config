@@ -10,7 +10,6 @@ if not vim.uv.fs_stat(lazypath) then
   })
 end
 
-
 vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = ' '
 vim.opt.fileformat = "unix"
@@ -37,7 +36,6 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 
-
 vim.keymap.set('i', 'kj', '<Esc>')
 vim.keymap.set('v', 'kj', '<Esc>')
 vim.keymap.set('c', 'kj', '<Esc>')
@@ -55,16 +53,15 @@ vim.keymap.set('n', '<leader>d', '"_d', { desc = 'Delete without yanking' })
 vim.keymap.set('x', '<leader>d', '"_d', { desc = 'Delete without yanking' })
 vim.keymap.set('n', '<leader>D', '"_D', { desc = 'Delete to end without yanking' })
 vim.keymap.set('n', '<leader>x', '"_x', { desc = 'Delete char without yanking' })
-vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to left window' })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to window below' })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to window above' })
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to left window' })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to window below' })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to window above' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to right window' })
-vim.keymap.set('n', '<C-Up>',      ':resize -2<CR>',          { desc = 'Decrease height' })
-vim.keymap.set('n', '<C-Down>',    ':resize +2<CR>',          { desc = 'Increase height' })
-vim.keymap.set('n', '<C-Left>',    ':vertical resize -2<CR>', { desc = 'Decrease width' })
-vim.keymap.set('n', '<C-Right>',   ':vertical resize +2<CR>', { desc = 'Increase width' })
+vim.keymap.set('n', '<C-Up>', ':resize -2<CR>', { desc = 'Decrease height' })
+vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', { desc = 'Increase height' })
+vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>', { desc = 'Decrease width' })
+vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', { desc = 'Increase width' })
 vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { desc = 'Exit terminal mode' })
-
 
 require("lazy").setup({
 
@@ -86,53 +83,16 @@ require("lazy").setup({
     end,
   },
 
-  -- LSP Core & Installer
-  { "williamboman/mason.nvim", config = true },
-  { "williamboman/mason-lspconfig.nvim" },
-  { "neovim/nvim-lspconfig" }, -- Required for bridging mason & native LSP config
-
-  -- Autocompletion
-  { "hrsh7th/nvim-cmp" },
-  { "hrsh7th/cmp-nvim-lsp" },
-  { "hrsh7th/cmp-buffer" },
-  { "hrsh7th/cmp-path" },
-  { "L3MON4D3/LuaSnip", version = "v2.*" },
-  { "saadparwaiz1/cmp_luasnip" },
-
--- Treesitter (Advanced Highlighting)
   {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
+    "numToStr/Comment.nvim",
+    lazy = false,
     config = function()
-      -- The old require("nvim-treesitter.configs").setup() is gone.
-      -- We just call the main module setup function directly:
-      require("nvim-treesitter").setup({
-        ensure_installed = { "c", "cpp", "python", "lua", "vim", "vimdoc" },
-        highlight = { enabled = true },
-        indent = { enabled = true },
-      })
+      require("Comment").setup()
     end,
   },
-  -- Telescope (Fuzzy Finder)
-  {
-    "nvim-telescope/telescope.nvim",
-    branch = "0.1.x",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      local builtin = require('telescope.builtin')
-      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find Files' })
-      vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live Grep' })
-      vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Find Buffers' })
-    end
-  },
 
-  -- Commenting tool (gcc to comment line, gc in visual mode)
-  { "numToStr/Comment.nvim", config = true },
-
-  -- Git integration gutter indicators
   { "lewis6991/gitsigns.nvim", config = true },
 
-  -- Jupyter notebooks
   { "goerz/jupytext.vim" },
 
 }, {
@@ -146,105 +106,4 @@ require("lazy").setup({
       },
     },
   },
-})
-
--- ============================================
--- LSP SETUP
--- ============================================
-
--- Setup mason utilities
-require("mason").setup()
-
--- Link cmp capabilities to LSP configs so autocomplete actually gets suggestions
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
-local lspconfig = require("lspconfig")
-
-require("mason-lspconfig").setup({
-  ensure_installed = { "clangd", "pyright" },
-  handlers = {
-    -- Default handler sets up servers automatically with cmp capabilities
-    function(server_name)
-      lspconfig[server_name].setup({
-        capabilities = capabilities,
-      })
-    end,
-    
-    -- Dedicated override for Pyright (adds your custom settings)
-    ["pyright"] = function()
-      lspconfig.pyright.setup({
-        capabilities = capabilities,
-        settings = {
-          python = {
-            analysis = {
-              typeCheckingMode = "basic",
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true,
-            }
-          }
-        }
-      })
-    end,
-  }
-})
-
--- LSP global keymaps trigger only when server attaches to buffer
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(event)
-    local opts = { buffer = event.buf }
-    vim.keymap.set('n', 'gd',         vim.lsp.buf.definition,    opts)
-    vim.keymap.set('n', 'gD',         vim.lsp.buf.declaration,   opts)
-    vim.keymap.set('n', 'gr',         vim.lsp.buf.references,    opts)
-    vim.keymap.set('n', 'K',          vim.lsp.buf.hover,         opts)
-    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename,        opts)
-    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action,   opts)
-    vim.keymap.set('n', '[d',         vim.diagnostic.goto_prev,  opts)
-    vim.keymap.set('n', ']d',         vim.diagnostic.goto_next,  opts)
-    vim.keymap.set('n', '<leader>e',  vim.diagnostic.open_float, opts)
-  end
-})
-
--- ============================================
--- AUTOCOMPLETE SETUP
--- ============================================
-local cmp = require("cmp")
-local luasnip = require("luasnip")
-
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>']     = cmp.mapping.abort(),
-    ['<CR>']      = cmp.mapping.confirm({ select = true }),
-    ['='] = nil,  -- Prevents = from triggering snippets
-    ['<Tab>']     = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<S-Tab>']   = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-  }),
-  sources = cmp.config.sources({
-    { name = "nvim_lsp" },
-    { name = "luasnip" },
-    { name = "buffer" },
-    { name = "path" },
-  }),
 })
