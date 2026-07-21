@@ -39,7 +39,6 @@ vim.opt.smartindent = true
 vim.keymap.set('n', '<leader>o', 'o<Esc>', { desc = 'New line below' })
 vim.keymap.set('n', '<leader>O', 'O<Esc>', { desc = 'New line above' })
 vim.keymap.set('i', 'kj', '<Esc>')
-vim.keymap.set('v', 'kj', '<Esc>')
 vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { desc = 'Exit terminal mode' })
 vim.keymap.set('n', '<Esc>', ':noh<CR>', { desc = 'Clear search highlight' })
 vim.keymap.set('n', 'Y', 'y$')
