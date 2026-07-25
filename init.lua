@@ -62,11 +62,8 @@ vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', { desc = 'Increase height' })
 vim.keymap.set('n', '<C-Left>', ':vertical resize -6<CR>', { desc = 'Decrease width' })
 vim.keymap.set('n', '<C-Right>', ':vertical resize +6<CR>', { desc = 'Increase width' })
 vim.keymap.set('n', '<leader>rc', ':%s/\\/\\/.*\\|\\/\\*\\_.\\{-}\\*\\///ge<CR>:noh<CR>', { desc = 'Remove C++ comments' })
-
-vim.keymap.set('n', '<leader>e', function()
-  vim.cmd("NvimTreeToggle " .. vim.fn.expand("%:p:h"))
-end, { desc = 'Toggle file explorer' })
-
+vim.keymap.set('n', 'gp', '`[v`]', { desc = 'Paste and select' })
+vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { desc = 'Toggle file explorer' })
 
 
 require("lazy").setup({
@@ -132,27 +129,69 @@ require("lazy").setup({
     },
   },
   { "goerz/jupytext.vim" },
-  {
-    "nvim-tree/nvim-tree.lua",
-    version = "*",
-    lazy = false,
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = function()
-      require("nvim-tree").setup({
-        view = {
-          width = 30,
+{
+  "nvim-neo-tree/neo-tree.nvim",
+  branch = "v3.x",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-tree/nvim-web-devicons",
+    "MunifTanjim/nui.nvim",
+  },
+  config = function()
+    require("neo-tree").setup({
+      close_if_last_window = false,
+      popup_border_style = "rounded",
+      enable_git_status = true,
+      enable_diagnostics = true,
+      default_component_configs = {
+        indent = {
+          indent_size = 2,
+          padding = 1,
         },
-        actions = {
-          open_file = {
-            quit_on_open = false,
-            resize_window = true,
+        modified = {
+          symbol = "[+]",
+          highlight = "NeoTreeModified",
+        },
+        git_status = {
+          symbols = {
+            added = "✚",
+            modified = "",
+            deleted = "✖",
+            renamed = "󰁕",
+            untracked = "",
+            ignored = "",
+            unstaged = "󰄱",
+            staged = "",
+            conflict = "",
           },
         },
-      })
-    end,
-  },
+      },
+      window = {
+        position = "left",
+        width = 30,
+        mapping_options = {
+          noremap = true,
+          nowait = true,
+        },
+      },
+      filesystem = {
+        filtered_items = {
+          visible = false,
+          hide_dotfiles = false,
+          hide_gitignored = false,
+          hide_by_name = {
+            ".git",
+          },
+          never_show = {},
+        },
+        follow_current_file = {
+          enabled = true,
+          leave_dirs_open = false,
+        },
+      },
+    })
+  end,
+},
 },
 {
   install = { colorscheme = { "onedark" } },
