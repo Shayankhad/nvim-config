@@ -62,7 +62,7 @@ vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', { desc = 'Increase height' })
 vim.keymap.set('n', '<C-Left>', ':vertical resize -6<CR>', { desc = 'Decrease width' })
 vim.keymap.set('n', '<C-Right>', ':vertical resize +6<CR>', { desc = 'Increase width' })
 vim.keymap.set('n', '<leader>rc', ':%s/\\/\\/.*\\|\\/\\*\\_.\\{-}\\*\\///ge<CR>:noh<CR>', { desc = 'Remove C++ comments' })
-vim.keymap.set('n', 'gp', 'p`[v`]', { desc = 'Paste and reselect' })
+vim.keymap.set('n', 'gp', '`[v`]', { desc = 'Reselect last pasted text', remap = true })
 vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { desc = 'Toggle file explorer' })
 
 
@@ -129,74 +129,77 @@ require("lazy").setup({
     },
   },
   { "goerz/jupytext.vim" },
-{
-  "nvim-neo-tree/neo-tree.nvim",
-  branch = "v3.x",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    "nvim-tree/nvim-web-devicons",
-    "MunifTanjim/nui.nvim",
-  },
-  config = function()
-    require("neo-tree").setup({
-      close_if_last_window = false,
-      popup_border_style = "rounded",
-      enable_git_status = true,
-      enable_diagnostics = true,
-      default_component_configs = {
-        indent = {
-          indent_size = 2,
-          padding = 1,
-        },
-        modified = {
-          symbol = "[+]",
-          highlight = "NeoTreeModified",
-        },
-        git_status = {
-          symbols = {
-            added = "✚",
-            modified = "",
-            deleted = "✖",
-            renamed = "󰁕",
-            untracked = "",
-            ignored = "",
-            unstaged = "󰄱",
-            staged = "",
-            conflict = "",
+    {
+      "nvim-neo-tree/neo-tree.nvim",
+      branch = "v3.x",
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+        "nvim-tree/nvim-web-devicons",
+        "MunifTanjim/nui.nvim",
+      },
+      config = function()
+        require("neo-tree").setup({
+          close_if_last_window = false,
+          popup_border_style = "rounded",
+          enable_git_status = true,
+          enable_diagnostics = true,
+          default_component_configs = {
+            indent = {
+              indent_size = 2,
+              padding = 1,
+            },
+            modified = {
+              symbol = "[+]",
+              highlight = "NeoTreeModified",
+            },
+            git_status = {
+              symbols = {
+                -- Changed symbols to minimal or empty
+                added     = "",    -- Remove the ✚ for added files
+                modified  = "",    -- Remove the dot for modified files
+                deleted   = "",    -- Remove the ✖ for deleted files
+                renamed   = "",    -- Remove the arrow for renamed files
+                untracked = "",    -- Remove the ? for untracked files
+                ignored   = "",    -- Remove the square for ignored files
+                unstaged  = "",    -- Remove the gear for unstaged
+                staged    = "",    -- Remove the checkmark for staged
+                conflict  = "",    -- Remove the thunderbolt for conflicts
+              },
+            },
           },
-        },
-      },
-      window = {
-        position = "left",
-        width = 30,
-        mapping_options = {
-          noremap = true,
-          nowait = true,
-        },
-        -- ADD THIS MAPPINGS SECTION:
-        mappings = {
-          ["W"] = "close_all_nodes",
-          ["E"] = "expand_all_nodes",
-        },
-      },
-      filesystem = {
-        filtered_items = {
-          visible = false,
-          hide_dotfiles = false,
-          hide_gitignored = false,
-          hide_by_name = {
-            ".git",
+          window = {
+            position = "left",
+            width = 30,
+            mapping_options = {
+              noremap = true,
+              nowait = true,
+            },
+            mappings = {
+              ["E"] = "expand_all_nodes",
+              ["W"] = function(state)
+                local tree = state.tree
+                tree:collapse_all()
+              end,
+            },
           },
-          never_show = {},
-        },
-        follow_current_file = {
-          enabled = true,
-          leave_dirs_open = false,
-        },
-      },
-    })
-  end,
-},
+          filesystem = {
+            filtered_items = {
+              visible = false,        -- This means hidden files ARE shown by default
+              hide_dotfiles = false,
+              hide_gitignored = false,
+              hide_by_name = {
+                ".git",
+              },
+              never_show = {},
+            },
+            follow_current_file = {
+              enabled = true,
+              leave_dirs_open = false,
+            },
+          },
+        })
+      end,
+    },
 },
 {
   install = { colorscheme = { "onedark" } },
