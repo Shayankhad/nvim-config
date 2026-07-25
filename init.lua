@@ -117,18 +117,23 @@ require("lazy").setup({
       float_opts = { border = "curved" },
     },
   },
+
   {
     "sphamba/smear-cursor.nvim",
     opts = {
-      -- Smear cursor when jumping between buffers or windows
       smear_between_buffers = true,
-      -- Smear cursor when moving down to neighbor lines
       smear_between_neighbor_lines = true,
-      -- Animate cursor trail inside insert mode
       smear_insert_mode = true,
+      stiffness = 1.1,
+      trailing_stiffness = 0.5,
+      distance_stop_animating = 0.2,
+      cursor_color = "#d3cdc3",
+    -- Examples: "#ff0000" (red), "#00ff00" (green), "#5f87ff" (blue)
+      legacy_computing_symbols_support = false,
+      hide_target_hack = false,
+      window_priority = 120,
     },
   },
-  { "goerz/jupytext.vim" },
     {
       "nvim-neo-tree/neo-tree.nvim",
       branch = "v3.x",
@@ -154,16 +159,15 @@ require("lazy").setup({
             },
             git_status = {
               symbols = {
-                -- Changed symbols to minimal or empty
-                added     = "",    -- Remove the ✚ for added files
-                modified  = "",    -- Remove the dot for modified files
-                deleted   = "",    -- Remove the ✖ for deleted files
-                renamed   = "",    -- Remove the arrow for renamed files
-                untracked = "",    -- Remove the ? for untracked files
-                ignored   = "",    -- Remove the square for ignored files
-                unstaged  = "",    -- Remove the gear for unstaged
-                staged    = "",    -- Remove the checkmark for staged
-                conflict  = "",    -- Remove the thunderbolt for conflicts
+                added     = "",
+                modified  = "",
+                deleted   = "",
+                renamed   = "",
+                untracked = "",
+                ignored   = "",
+                unstaged  = "",
+                staged    = "",
+                conflict  = "",
               },
             },
           },
