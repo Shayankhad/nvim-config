@@ -173,6 +173,11 @@ require("lazy").setup({
           noremap = true,
           nowait = true,
         },
+        -- ADD THIS MAPPINGS SECTION:
+        mappings = {
+          ["W"] = "close_all_nodes",
+          ["E"] = "expand_all_nodes",
+        },
       },
       filesystem = {
         filtered_items = {
