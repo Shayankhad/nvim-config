@@ -176,7 +176,10 @@ require("lazy").setup({
             },
             mappings = {
               ["E"] = "expand_all_nodes",
-              ["W"] ="close_all_nodes"
+              ["W"] ="close_all_nodes",
+              ["V"] = "open_vsplit",  
+              ["X"] = "open_split",   
+              ["<CR>"] = "open",          
             },
           },
           filesystem = {
