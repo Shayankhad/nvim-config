@@ -62,7 +62,7 @@ vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', { desc = 'Increase height' })
 vim.keymap.set('n', '<C-Left>', ':vertical resize -6<CR>', { desc = 'Decrease width' })
 vim.keymap.set('n', '<C-Right>', ':vertical resize +6<CR>', { desc = 'Increase width' })
 vim.keymap.set('n', '<leader>rc', ':%s/\\/\\/.*\\|\\/\\*\\_.\\{-}\\*\\///ge<CR>:noh<CR>', { desc = 'Remove C++ comments' })
-vim.keymap.set('n', 'gp', '`[v`]', { desc = 'Paste and select' })
+vim.keymap.set('n', 'gp', 'p`[v`]', { desc = 'Paste and reselect' })
 vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { desc = 'Toggle file explorer' })
 
 
