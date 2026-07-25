@@ -59,11 +59,17 @@ vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to window above' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to right window' })
 vim.keymap.set('n', '<C-Up>', ':resize -2<CR>', { desc = 'Decrease height' })
 vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', { desc = 'Increase height' })
-vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>', { desc = 'Decrease width' })
-vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', { desc = 'Increase width' })
+vim.keymap.set('n', '<C-Left>', ':vertical resize -6<CR>', { desc = 'Decrease width' })
+vim.keymap.set('n', '<C-Right>', ':vertical resize +6<CR>', { desc = 'Increase width' })
 vim.keymap.set('n', '<leader>rc', ':%s/\\/\\/.*\\|\\/\\*\\_.\\{-}\\*\\///ge<CR>:noh<CR>', { desc = 'Remove C++ comments' })
-require("lazy").setup({
 
+vim.keymap.set('n', '<leader>e', function()
+  vim.cmd("NvimTreeToggle " .. vim.fn.expand("%:p:h"))
+end, { desc = 'Toggle file explorer' })
+
+
+
+require("lazy").setup({
   {
     "navarasu/onedark.nvim",
     name = "onedark",
@@ -126,8 +132,29 @@ require("lazy").setup({
     },
   },
   { "goerz/jupytext.vim" },
-
-}, {
+  {
+    "nvim-tree/nvim-tree.lua",
+    version = "*",
+    lazy = false,
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("nvim-tree").setup({
+        view = {
+          width = 30,
+        },
+        actions = {
+          open_file = {
+            quit_on_open = false,
+            resize_window = true,
+          },
+        },
+      })
+    end,
+  },
+},
+{
   install = { colorscheme = { "onedark" } },
   checker = { enabled = false, notify = false },
   change_detection = { notify = false },
