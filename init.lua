@@ -176,10 +176,7 @@ require("lazy").setup({
             },
             mappings = {
               ["E"] = "expand_all_nodes",
-              ["W"] = function(state)
-                local tree = state.tree
-                tree:collapse_all()
-              end,
+              ["W"] ="close_all_nodes"
             },
           },
           filesystem = {
