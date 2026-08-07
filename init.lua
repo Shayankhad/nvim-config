@@ -258,6 +258,20 @@ require("lazy").setup({
     -- ci": ("change inner quotes") Deletes hiii, keeps the quotes, and immediately puts you in Insert Mode to type something new.
     -- di": ("delete inner quotes") Deletes hiii but leaves the quotes empty "".
     -- yi": ("yank inner quotes") Copies hiii to your clipboard.
+  },
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {},
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("lualine").setup({
+        options = { theme = "auto" }
+      })
+    end
   }
 },
 {
