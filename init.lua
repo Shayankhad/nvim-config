@@ -272,6 +272,15 @@ require("lazy").setup({
         options = { theme = "auto" }
       })
     end
+  },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    opts = {},
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {},
   }
 },
 {
