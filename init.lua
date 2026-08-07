@@ -235,6 +235,29 @@ require("lazy").setup({
     vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
     vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Live grep" })
   end,
+  },
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    config = true
+  },
+  {
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup({})
+    end
+    --• Add (ys): Type ysiw" (you surround inner word with "). This wraps the current word in double quotes: hello -> "hello".
+    --• Change (cs): Type cs"' (change surround " to '). This changes the surroundings: "hello" -> 'hello'.
+    --• Delete (ds): Type ds' (delete surround '). This removes the surroundings: 'hello' -> hello.
+    --• Visual Mode (S): Highlight text in visual mode and press S{ to wrap the selection in curly braces.
+    --
+    --  • va": ("visual around quotes") Selects the text and the quotes themselves.
+    --  • vi": ("visual in the quotes")
+    -- ci": ("change inner quotes") Deletes hiii, keeps the quotes, and immediately puts you in Insert Mode to type something new.
+    -- di": ("delete inner quotes") Deletes hiii but leaves the quotes empty "".
+    -- yi": ("yank inner quotes") Copies hiii to your clipboard.
   }
 },
 {
