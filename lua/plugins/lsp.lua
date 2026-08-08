@@ -5,11 +5,24 @@ return {
   },
   {
     "williamboman/mason-lspconfig.nvim",
-    opts = {},
+    opts = {
+      ensure_installed = { "pyright" },
+    },
   },
   {
     "neovim/nvim-lspconfig",
+    dependencies = { "saghen/blink.cmp" },
     config = function()
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
+      vim.lsp.config('pyright', {
+        capabilities = capabilities,
+        settings = {
+          python = {
+            pythonPath = vim.fn.expand("~/ml/venv/bin/python")
+          }
+        }
+      })
+      vim.lsp.enable('pyright')
     end,
   },
   {
@@ -17,7 +30,12 @@ return {
     version = "*",
     dependencies = "rafamadriz/friendly-snippets",
     opts = {
-      keymap = { preset = "default" },
+      keymap = {
+        preset = "default",
+        ['<C-j>'] = { 'select_next', 'fallback' },
+        ['<C-k>'] = { 'select_prev', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
+      },
       appearance = {
         use_nvim_cmp_as_default = true,
         nerd_font_variant = "mono",
