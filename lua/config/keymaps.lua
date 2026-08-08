@@ -29,3 +29,33 @@ map('n', '<C-Right>', ':vertical resize +6<CR>', { desc = 'Increase width' })
 map('n', '<leader>rc', ':%s/\\/\\/.*\\|\\/\\*\\_.\\{-}\\*\\///ge<CR>:noh<CR>', { desc = 'Remove C++ comments' })
 map('n', 'gp', '`[v`]', { desc = 'Reselect last pasted text', remap = true })
 map('n', '<leader>e', ':Neotree toggle<CR>', { desc = 'Toggle file explorer' })
+map('n', '<leader>gl', vim.diagnostic.open_float, { desc = 'Show LSP diagnostics' })
+map('n', '<leader>gy', function()
+  local diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line('.') - 1 })
+  if #diagnostics > 0 then
+    vim.fn.setreg('+', diagnostics[1].message)
+    print("Copied diagnostic to clipboard!")
+  else
+    print("No diagnostic on current line")
+  end
+end, { desc = 'Copy LSP diagnostic to clipboard' })
+
+vim.api.nvim_create_user_command("CopyDiagnosticsAll", function()
+  local diagnostics = vim.diagnostic.get(nil) -- get all workspace diagnostics
+  if #diagnostics == 0 then
+    print("No diagnostics found!")
+    return
+  end
+  
+  local lines = {}
+  for _, diag in ipairs(diagnostics) do
+    local severity = vim.diagnostic.severity[diag.severity] or "UNKNOWN"
+    local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(diag.bufnr), ":t")
+    local line = diag.lnum + 1
+    table.insert(lines, string.format("[%s] %s:%d - %s", severity, filename, line, diag.message))
+  end
+  
+  local text = table.concat(lines, "\n")
+  vim.fn.setreg("+", text)
+  print("Copied " .. #diagnostics .. " diagnostics to clipboard!")
+end, { desc = "Copy all workspace diagnostics to clipboard" })
