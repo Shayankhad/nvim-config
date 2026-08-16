@@ -25,3 +25,8 @@ opt.softtabstop = 4
 opt.shiftwidth = 4
 opt.expandtab = true
 opt.smartindent = true
+
+-- Enable terminal bidirectional support for RTL languages (e.g. Persian/Arabic)
+-- This tells Neovim to leave BiDi rendering to the terminal emulator
+opt.termbidi = true
+opt.arabicshape = true
